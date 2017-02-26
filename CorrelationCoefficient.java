@@ -6,6 +6,8 @@ import java.io.IOException;
 public class CorrelationCoefficient {
   public static void main(String[] args) {
     BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    String usrInEsc = "n";
+
     String sXLength = "";
     String sYLength = "";
     String sXDigits = "";
@@ -13,50 +15,45 @@ public class CorrelationCoefficient {
     String sXptDigi = "";
     String sYptDigi = "";
 
-    try {
-      System.out.print("データxの個数:");
-      sXLength = br.readLine();
-      System.out.print("データyの個数:");
-      sYLength = br.readLine();
-      System.out.print("データxの桁数:");
-      sXDigits = br.readLine();
-      System.out.print("データyの桁数:");
-      sYDigits = br.readLine();
-      System.out.print("データxの小数点以下の桁数:");
-      sXptDigi = br.readLine();
-      System.out.print("データyの小数点以下の桁数:");
-      sYptDigi = br.readLine();
-    } catch (IOException e) {
-      sXLength = "";
-      sYLength = "";
-      sXDigits = "";
-      sYDigits = "";
-      sXptDigi = "";
-      sYptDigi = "";
-    }
+    int xLength = 10;
+    int yLength = 10;
+    int xDigits = 2;
+    int yDigits = 2;
+    int xptDigi = 1;
+    int yptDigi = 1;
 
-    boolean check = !sXLength.equals("") &&
-                    !sYLength.equals("") &&
-                    !sXDigits.equals("") &&
-                    !sYDigits.equals("") &&
-                    !sXptDigi.equals("") &&
-                    !sYptDigi.equals("");
-
-    int xLength = 0;
-    int yLength = 0;
-    int xDigits = 0;
-    int yDigits = 0;
-    int xptDigi = 0;
-    int yptDigi = 0;
-
-    if (check) {
+    for (;;) {
       try {
+        System.out.print("データxの個数:");
+        sXLength = br.readLine();
+        System.out.print("データyの個数:");
+        sYLength = br.readLine();
+        System.out.print("データxの桁数:");
+        sXDigits = br.readLine();
+        System.out.print("データyの桁数:");
+        sYDigits = br.readLine();
+        System.out.print("データxの小数点以下の桁数:");
+        sXptDigi = br.readLine();
+        System.out.print("データyの小数点以下の桁数:");
+        sYptDigi = br.readLine();
+
         xLength = Integer.parseInt(sXLength);
         yLength = Integer.parseInt(sYLength);
         xDigits = Integer.parseInt(sXDigits);
         yDigits = Integer.parseInt(sYDigits);
-      } catch (NumberFormatException e) {
-        System.err.println("数値ではありません");
+        xptDigi = Integer.parseInt(sXptDigi);
+        yptDigi = Integer.parseInt(sYptDigi);
+      }
+      catch (IOException e) {
+        sXLength = "";
+        sYLength = "";
+        sXDigits = "";
+        sYDigits = "";
+        sXptDigi = "";
+        sYptDigi = "";
+      }
+      catch (NumberFormatException e) {
+        System.err.println("数値以外が入力されました");
         System.err.println("データの大きさを10, 変量の桁数を2, 変量の小数点以下の桁数を1に設定します");
         xLength = 10;
         yLength = 10;
@@ -65,18 +62,35 @@ public class CorrelationCoefficient {
         xptDigi = 1;
         yptDigi = 1;
       }
+
+      double[] dataX = randoms(xLength, xDigits, xptDigi);
+      double[] dataY = randoms(yLength, yDigits, yptDigi);
+
+      System.out.println("データx : ");
+      System.out.println("\t" + dataToStr(dataX));
+      System.out.println("データy : ");
+      System.out.println("\t" + dataToStr(dataY));
+
+      System.out.print("相関係数 = ");
+      System.out.println(correCoeff(dataX, dataY) + "...");
+
+      try {
+        System.out.print("exit? (y/n) :");
+        usrInEsc = br.readLine();
+        System.out.println();
+      }
+      catch (IOException e) {
+        System.err.println("例外が発生:終了します");
+        break;
+      }
+
+      if (usrInEsc.equals("y")) {
+        break;
+      }
+      else {
+        continue;
+      }
     }
-
-    double[] dataX = randoms(xLength, xDigits, xptDigi);
-    double[] dataY = randoms(yLength, yDigits, yptDigi);
-
-    System.out.println("データx : ");
-    System.out.println("\t" + dataToStr(dataX));
-    System.out.println("データy : ");
-    System.out.println("\t" + dataToStr(dataY));
-
-    System.out.print("相関係数 = ");
-    System.out.println(correCoeff(dataX, dataY) + "...");
   }
 
   public static double correCoeff(double[] dataX, double[] dataY) {
